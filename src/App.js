@@ -6,6 +6,7 @@ import Protected from "./Components/Auth/Protected";
 import { connect } from "react-redux";
 import {jarvisClient} from "./BaseEndpoint/jarvisClient";
 import JarvisNavbar from "./Layout/JarvisNavbar";
+import Clients from "./Components/Client/Clients";
 //
 // const serviceAPI = async (dispatch, state) => {
 //   let response = await jarvisClient.post('/auth/sign_in', {
@@ -29,6 +30,7 @@ function App() {
         <Route path="/" element={<Protected />}>
           <Route path="signout" element={<SignOut />} />
           <Route path="user" element={<JarvisNavbar />} />
+          <Route path="clients" element={<Clients />} />
         </Route>
       </Routes>
     </BrowserRouter>

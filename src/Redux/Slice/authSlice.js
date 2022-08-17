@@ -17,7 +17,13 @@ export const jarvisApi = createApi({
       }),
       tagTypes: ['Post'],
     }),
+    getOpportunities: builder.query({
+      query: () => ({url: '/opportunities'})
+    }),
+    getClients: builder.query({
+      query : () => ({url: '/clients'})
+    })
   }),
 })
 
-export const { useSignInMutation } = jarvisApi
+export const { useSignInMutation, useGetOpportunitiesQuery, useGetClientsQuery} = jarvisApi
