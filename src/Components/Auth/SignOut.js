@@ -1,28 +1,25 @@
 import {Button} from "react-bootstrap";
-import {Navigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
+import {Alert} from "react-bootstrap";
 
 const SignOut = () => {
 
+  const navigate = useNavigate();
+  const status = localStorage.getItem("isAuthenticated", true);
+
   const signOut = () => {
-    if (localStorage.getItem("isAuthenticated", true))
-    {
-      localStorage.setItem("isAuthenticated", false)
-      return (
-        <div>
-          <alert>Signed Out Successfully!</alert>;
-          <Navigate to="\signin" />
-        </div>
-      )
+    if (status === "true") {
+      localStorage.setItem("isAuthenticated", false);
+      navigate("/login")
     }
     else {
       return (
         <div>
-          <alert>User Not Logged In!</alert>;
-          <Navigate to="\signin" />
-         </div>
+          <Alert variant="warning">User Not Logged In!</Alert>;
+        </div>
       )
     }
-    }
+  }
 
   return (
     <div>

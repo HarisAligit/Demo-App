@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const jarvisApi = createApi({
   reducerPath: 'jarvisApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://revforce-dev.empgautos.com/api/crm/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://staging-olxpk.jarvisempg.com/api/crm/' }),
   tagTypes: ['Post'],
   endpoints: (builder) => ({
     signIn: builder.mutation({
