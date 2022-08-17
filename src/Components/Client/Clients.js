@@ -4,7 +4,6 @@ import {useEffect} from "react";
 
 const Clients = () => {
   const { data, error, isLoading } = useGetClientsQuery();
-
   // const getData = async () => {
   //   try {
   //     await getClients().unwrap();

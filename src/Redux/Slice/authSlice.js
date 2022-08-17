@@ -15,10 +15,18 @@ export const jarvisApi = createApi({
           'Content-type': 'application/json; charset=UTF-8',
         },
       }),
+      transformResponse(response, meta) {
+        return { response, accessToken: meta.response.headers.get('access-token'), client: meta.response.headers.get('client'), uid: meta.response.headers.get('uid')}
+      },
       tagTypes: ['Post'],
     }),
-    getOpportunities: builder.query({
-      query: () => ({url: '/opportunities'})
+    getOpportunities: builder.mutation({
+      query: () => ({
+        url: '/opportunities',
+        // headers: {
+        //   'Content-type': 'application/json; charset=UTF-8',
+        // },
+      })
     }),
     getClients: builder.query({
       query : () => ({url: '/clients'})
@@ -26,4 +34,4 @@ export const jarvisApi = createApi({
   }),
 })
 
-export const { useSignInMutation, useGetOpportunitiesQuery, useGetClientsQuery} = jarvisApi
+export const { useSignInMutation, useGetOpportunitiesQuery, useGetClientsMutation} = jarvisApi
