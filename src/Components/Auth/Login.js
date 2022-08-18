@@ -1,6 +1,6 @@
 import {Alert, Button} from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { useSignInMutation } from '../../Redux/Slice/authSlice'
 import {Navigate} from "react-router-dom";
 
@@ -8,11 +8,25 @@ const Login = () => {
 
   let formSubmitError;
   let status = localStorage.getItem("isAuthenticated", true);
-  const [signIn, response] = useSignInMutation();
+  const [signIn, {data}] = useSignInMutation();
   const [postForm, setPostForm] = useState('Submit');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [alert, setAlert] = useState(0);
+  // console.log("\nData: ", data);
+
+
+  useEffect(() => {
+    if (data)
+    {
+      localStorage.setItem("isAuthenticated", true);
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("client", data.client);
+      localStorage.setItem("uid", data.uid);
+      setAlert(2)
+      console.log("\nData: ", data);
+    }
+  }, [data])
 
   const onSubmit = async (e) => {
     e.preventDefault()
@@ -21,11 +35,7 @@ const Login = () => {
       password: password,
     };
     try {
-      const response = await signIn(formData).unwrap();
-      if (response) {
-        localStorage.setItem("isAuthenticated", true);
-        setAlert(2)
-      }
+      await signIn(formData).unwrap();
     }
     catch (err) {
       console.log(`Request Failed!\n ${err.data.errors}`)
