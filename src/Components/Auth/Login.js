@@ -20,6 +20,9 @@ const Login = () => {
     if (data)
     {
       localStorage.setItem("isAuthenticated", true);
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("client", data.client);
+      localStorage.setItem("uid", data.uid);
       setAlert(2)
       console.log("\nData: ", data);
     }

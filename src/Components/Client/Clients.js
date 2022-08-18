@@ -1,58 +1,64 @@
 import Table from "react-bootstrap/Table";
 import { useGetClientsMutation } from "../../Redux/Slice/authSlice";
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
+import JarvisNavbar from "../../Layout/JarvisNavbar";
 
 const Clients = () => {
-  const { data, error, isLoading } = useGetClientsMutation();
-  // const getData = async () => {
-  //   try {
-  //     await getClients().unwrap();
-  //     console.log(response.data)
-  //   }
-  //   catch (err) {
-  //     console.log(`Error: ${err}`)
-  //   }
-  // }
+  const [getClients, { data }] = useGetClientsMutation();
 
-  useEffect(() => {}, []);
+  const getData = async () => {
+    try {
+      await getClients().unwrap();
+    }
+    catch (err) {
+      console.log(`Error: ${err}`)
+    }
+  }
+
+  useEffect(() => {
+    if (!data?.success === true) getData();
+    else {
+      console.log(data)
+    }
+  }, [data]);
 
   return (
+    <>
+      <JarvisNavbar />
+    {!data?.success === true ? <h2>Loading....</h2> :
     <Table striped bordered hover>
-      {error ? (
-        <>Oh no, there was an error</>
-      ) : isLoading ? (
-        <>Loading...</>
-      ) : data ? (
-        <> data </>
-      ) : null}
       <thead>
-        <tr>
-          <th>#</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Username</th>
-        </tr>
+      <tr>
+        <th>Ref#</th>
+        <th>Business Name</th>
+        <th>Client Type</th>
+        <th>Status</th>
+        <th>Classification</th>
+        <th>Sales Channel</th>
+        <th>Contact Name</th>
+        <th>Contact Phone</th>
+        <th>Actions</th>
+      </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td colSpan={2}>Larry the Bird</td>
-          <td>@twitter</td>
-        </tr>
-      </tbody>
-    </Table>
+          {data.clients.map((item ) => (
+            <>
+              <tbody>
+              <tr>
+              <td>{item.reference_number}</td>
+                <td>{item.name}</td>
+                <td>{item.client_type.name}</td>
+                <td>{item.status.name}</td>
+                <td>{item.classification.name}</td>
+                <td>{item.sales_channel.name}</td>
+                <td>{item.contacts[0].name}</td>
+                <td>{item.contacts[0].phone}</td>
+                <td>Edit, View Details</td>
+              </tr>
+            </tbody>
+            </>
+          ))}
+    </Table>}
+    </>
   );
 };
 

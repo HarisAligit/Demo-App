@@ -37,10 +37,12 @@ export const jarvisApi = createApi({
     }),
     getClients: builder.mutation({
       query: () => ({
-        url: "/opportunities",
-        // headers: {
-        //   'Content-type': 'application/json; charset=UTF-8',
-        // },
+        url: "/clients",
+        headers: {
+          'access-token': localStorage.getItem("accessToken"),
+          'client': localStorage.getItem("client"),
+          'uid': localStorage.getItem("uid"),
+        },
       }),
     }),
   }),
