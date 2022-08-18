@@ -4,7 +4,9 @@ const ClientDetail = () => {
   const { id } = useParams();
 
   return (
-    <></>
+    <>
+      <h1>client detail</h1>
+    </>
   )
 
 }
