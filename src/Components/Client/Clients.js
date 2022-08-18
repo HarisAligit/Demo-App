@@ -3,6 +3,7 @@ import { useGetClientsMutation } from "../../Redux/Slice/authSlice";
 import {useEffect, useState} from "react";
 import JarvisNavbar from "../../Layout/JarvisNavbar";
 import {Link} from "react-router-dom";
+import {Spinner} from "react-bootstrap";
 
 const Clients = () => {
   const [getClients, { data }] = useGetClientsMutation();
@@ -26,7 +27,9 @@ const Clients = () => {
   return (
     <>
       <JarvisNavbar />
-    {!data?.success === true ? <h2>Loading....</h2> :
+    {!data?.success === true ? <><Spinner animation="border" role="status">
+      </Spinner>
+        <h5>Loading...</h5> </> :
     <Table striped bordered hover>
       <thead>
       <tr>
