@@ -60,7 +60,7 @@ export const jarvisApi = createApi({
 
 export const {
   useSignInMutation,
-  useGetClientDetailByID,
+  useGetClientDetailByIDMutation,
   useGetOpportunitiesQuery,
   useGetClientsMutation,
 } = jarvisApi;

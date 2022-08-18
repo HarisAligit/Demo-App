@@ -53,7 +53,7 @@ const Clients = () => {
                 <td>{item.sales_channel.name}</td>
                 <td>{item.contacts[0].name}</td>
                 <td>{item.contacts[0].phone}</td>
-                <Link to={`/clients/${item.id}`}><td>View Details</td></Link>
+                <td><Link to={`/clients/${item.id}`}>View Details</Link></td>
               </tr>
             </tbody>
             </>
