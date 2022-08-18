@@ -45,11 +45,22 @@ export const jarvisApi = createApi({
         },
       }),
     }),
+    getClientDetailByID: builder.mutation({
+      query: (id) => ({
+        url: `/clients/${id}`,
+        headers: {
+          'access-token': localStorage.getItem("accessToken"),
+          'client': localStorage.getItem("client"),
+          'uid': localStorage.getItem("uid"),
+        },
+      }),
+    }),
   }),
 });
 
 export const {
   useSignInMutation,
+  useGetClientDetailByIDMutation,
   useGetOpportunitiesQuery,
   useGetClientsMutation,
 } = jarvisApi;

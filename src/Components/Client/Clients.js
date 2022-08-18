@@ -2,6 +2,7 @@ import Table from "react-bootstrap/Table";
 import { useGetClientsMutation } from "../../Redux/Slice/authSlice";
 import {useEffect, useState} from "react";
 import JarvisNavbar from "../../Layout/JarvisNavbar";
+import {Link} from "react-router-dom";
 
 const Clients = () => {
   const [getClients, { data }] = useGetClientsMutation();
@@ -52,7 +53,7 @@ const Clients = () => {
                 <td>{item.sales_channel.name}</td>
                 <td>{item.contacts[0].name}</td>
                 <td>{item.contacts[0].phone}</td>
-                <td>Edit, View Details</td>
+                <td><Link to={`/clients/${item.id}`}>View Details</Link></td>
               </tr>
             </tbody>
             </>
