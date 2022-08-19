@@ -5,13 +5,11 @@ import JarvisNavbar from "../../Layout/JarvisNavbar";
 import {Link} from "react-router-dom";
 import {Button, Spinner} from "react-bootstrap";
 import { MultiSelect } from "react-multi-select-component";
+import Filter from "../../Shared/Filter";
 
 const Clients = () => {
+  const clientType = [], classification = [], salesChannel = [], productCategory = [];
   const [getClients, { data }] = useGetClientsMutation();
-  const [clientType, setClientType] = useState([]);
-  const [classification, setClassification] = useState([]);
-  const [salesChannel, setSalesChannel] = useState([]);
-  const [productCategory, setProductCategory] = useState([]);
   const [selected, setSelected] = useState([]);
   const [args, setArgs] = useState("false");
   const [referenceNumberInput, setReferenceNumberInput] = useState(null);
@@ -19,7 +17,7 @@ const Clients = () => {
 
   const pushFilterType = (params, arr, arg) => {
     params.map((item) => {
-      arr.push({value: item.id, label: item.name, arg: arg, inputType: 1})
+      arr.push({value: item.id, label: item.name, arg: arg, inputType: "select"})
     });
     return arr;
   }
@@ -51,45 +49,27 @@ const Clients = () => {
        let newArgs = "?";
        console.log("\nSelected in arguments", selected);
        selected.map((item) => {
-         if (item.inputType === 1) {
+         if (item.inputType === "select") {
            newArgs += "f" + "[" + item.arg + ".id]" + "[]=" + item.value + "&";
          }
-         else if (item.inputType === 2) {
+         else if (item.inputType === "input") {
            newArgs += "s" + "[" + item.arg + "]=" + item.value + "&";
          }
        });
        setArgs(newArgs.slice(0, -1));
-       console.log("\nArguments:", args, "\n");
     }
   }, [selected])
 
-  const DisplayMultiSelect = (arr, arg) => {
-    return (
-    <div>
-      <h2>{arg}</h2>
-      <MultiSelect
-        options={arr}
-        value={selected}
-        onChange={setSelected}
-        labelledBy="Select"
-      />
-    </div>
-    )
-  }
-
   useEffect(() => {
-    if (!data?.success === true) getData();
+    if (!data?.success === true) {
+      getData();
+    }
     else {
-      console.log("\nData: ", data)
       if (clientType.length === 0) {
         pushFilterType(data.client_types, clientType, "client_type");
         pushFilterType(data.classifications, classification, "classification");
         pushFilterType(data.sales_channels, salesChannel, "sales_channel");
         pushFilterType(data.product_categories, productCategory, "product_categories");
-        console.log("\nOwn Client: ", clientType);
-        console.log("\nOwn Classification: ", classification);
-        console.log("\nOwn Sales Channel: ", salesChannel);
-        console.log("\nOwn Prod Cats: ", productCategory);
       }
     }
   }, [data, args]);
@@ -97,7 +77,7 @@ const Clients = () => {
   const handleBusiness = (e) => {
      if (e.key === 'Enter') {
        console.log("\nEnter Business Name: ", businessName);
-       setSelected(selected => [...selected, {value: businessName, arg: "name", inputType: 2}]);
+       setSelected(selected => [...selected, {value: businessName, arg: "name", inputType: "input"}]);
        console.log("new SElect", selected);
      }
      else {
@@ -119,11 +99,12 @@ const Clients = () => {
 
       <h3>Business Name</h3>
       <input type="text" onKeyDown={handleBusiness}></input>
-      {DisplayMultiSelect(clientType, "Client Type")}
-      {DisplayMultiSelect(classification, "Classification")}
-      {DisplayMultiSelect(salesChannel, "Sales Channel")}
-      {DisplayMultiSelect(productCategory, "Product Categories")}
+      <Filter arr={clientType} arg={"Client Type"} func={setSelected} val={selected}/>
+      <Filter arr={classification} arg={"Classification"} func={setSelected} val={selected}/>
+      <Filter arr={salesChannel} arg={"Sales Channel"} func={setSelected} val={selected}/>
+      <Filter arr={productCategory} arg={"Product Categories"} func={setSelected} val={selected}/>
       <br /><br />
+
     {!data?.success === true ? <><Spinner animation="border" role="status">
       </Spinner>
         <h5>Loading...</h5> </> :
