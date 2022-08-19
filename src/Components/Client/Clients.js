@@ -3,64 +3,89 @@ import { useGetClientsMutation } from "../../Redux/Slice/authSlice";
 import {useEffect, useState} from "react";
 import JarvisNavbar from "../../Layout/JarvisNavbar";
 import {Link} from "react-router-dom";
-import {Spinner} from "react-bootstrap";
+import {Button, Spinner} from "react-bootstrap";
 import { MultiSelect } from "react-multi-select-component";
+import Filter from "../../Shared/Filter";
 
 const Clients = () => {
+  const clientType = [], classification = [], salesChannel = [], productCategory = [];
   const [getClients, { data }] = useGetClientsMutation();
-  const [clientType, setClientType] = useState([]);
-  const [classification, setClassification] = useState([]);
-  const [salesChannel, setSalesChannel] = useState([]);
-  const [productCategory, setProductCategory] = useState([]);
   const [selected, setSelected] = useState([]);
+  const [args, setArgs] = useState("false");
+  const [referenceNumberInput, setReferenceNumberInput] = useState(null);
+  const [businessName, setBusinessName] = useState('');
 
-
-  const pushClientType = (params, arr) => {
+  const pushFilterType = (params, arr, arg) => {
     params.map((item) => {
-      arr.push({value: item.id, label: item.name})
+      arr.push({value: item.id, label: item.name, arg: arg, inputType: "select"})
     });
     return arr;
   }
 
   const getData = async () => {
     try {
-      await getClients().unwrap();
+      if (args === "false") {
+        await getClients().unwrap();
+      }
+      else {
+        await getClients(args).unwrap();
+      }
     }
     catch (err) {
       console.log(`Error: ${err}`)
     }
   }
 
-  const DisplayMultiSelect = (arr, arg) => {
-    return (
-    <div>
-      <h2>{arg}</h2>
-      <MultiSelect
-        options={arr}
-        value={selected}
-        onChange={setSelected}
-        labelledBy="Select"
-      />
-    </div>
-    )
-  }
+  useEffect(() => {
+    getData();
+  }, [args])
 
   useEffect(() => {
-    if (!data?.success === true) getData();
-    else {
-      console.log("\nData: ", data)
-      if (clientType.length === 0) {
-        pushClientType(data.client_types, clientType, setClientType);
-        pushClientType(data.classifications, classification, setClassification);
-        pushClientType(data.sales_channels, salesChannel, setSalesChannel);
-        pushClientType(data.product_categories, productCategory, setProductCategory);
-        console.log("\nOwn Client: ", clientType);
-        console.log("\nOwn Classification: ", classification);
-        console.log("\nOwn Sales Channel: ", salesChannel);
-      }console.log("\nOwn Prod Cats: ", productCategory);
+    if (selected.length === 0)
+    {
+      setArgs("false");
     }
-  }, [data]);
+    else {
+       let newArgs = "?";
+       console.log("\nSelected in arguments", selected);
+       selected.map((item) => {
+         if (item.inputType === "select") {
+           newArgs += "f" + "[" + item.arg + ".id]" + "[]=" + item.value + "&";
+         }
+         else if (item.inputType === "input") {
+           newArgs += "s" + "[" + item.arg + "]=" + item.value + "&";
+         }
+       });
+       setArgs(newArgs.slice(0, -1));
+    }
+  }, [selected])
 
+  useEffect(() => {
+    if (!data?.success === true) {
+      getData();
+    }
+    else {
+      if (clientType.length === 0) {
+        pushFilterType(data.client_types, clientType, "client_type");
+        pushFilterType(data.classifications, classification, "classification");
+        pushFilterType(data.sales_channels, salesChannel, "sales_channel");
+        pushFilterType(data.product_categories, productCategory, "product_categories");
+      }
+    }
+  }, [data, args]);
+
+  const handleBusiness = (e) => {
+     if (e.key === 'Enter') {
+       console.log("\nEnter Business Name: ", businessName);
+       setSelected(selected => [...selected, {value: businessName, arg: "name", inputType: "input"}]);
+       console.log("new SElect", selected);
+     }
+     else {
+       setBusinessName(e.target.value)
+     }
+  }
+
+  // f[product_categories.id][]=5&f[sales_channel.id][]=2&f[client_type.id][]=4&f[classification.id][]=4
   return (
     <>
       <JarvisNavbar />
@@ -69,11 +94,17 @@ const Clients = () => {
           {item.label}
         </p>
       ))}</pre>
-      {DisplayMultiSelect(clientType, "Client Type")}
-      {DisplayMultiSelect(classification, "Classification")}
-      {DisplayMultiSelect(salesChannel, "Sales Channel")}
-      {DisplayMultiSelect(productCategory, "Product Categories")}
+
+      <Button>Reset Filters</Button>
+
+      <h3>Business Name</h3>
+      <input type="text" onKeyDown={handleBusiness}></input>
+      <Filter arr={clientType} arg={"Client Type"} func={setSelected} val={selected}/>
+      <Filter arr={classification} arg={"Classification"} func={setSelected} val={selected}/>
+      <Filter arr={salesChannel} arg={"Sales Channel"} func={setSelected} val={selected}/>
+      <Filter arr={productCategory} arg={"Product Categories"} func={setSelected} val={selected}/>
       <br /><br />
+
     {!data?.success === true ? <><Spinner animation="border" role="status">
       </Spinner>
         <h5>Loading...</h5> </> :
