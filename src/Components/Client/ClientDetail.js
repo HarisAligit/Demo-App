@@ -19,9 +19,6 @@ const ClientDetail = () => {
   var date;
   useEffect(() => {
     if (!data?.success === true) getData();
-    else {
-      console.log(data.client.next_completing_contract.end_date);
-    }
   }, [data]);
   return (
     <>

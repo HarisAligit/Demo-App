@@ -8,20 +8,6 @@ import {jarvisClient} from "./BaseEndpoint/jarvisClient";
 import JarvisNavbar from "./Layout/JarvisNavbar";
 import Clients from "./Components/Client/Clients";
 import ClientDetail from "./Components/Client/ClientDetail";
-//
-// const serviceAPI = async (dispatch, state) => {
-//   let response = await jarvisClient.post('/auth/sign_in', {
-//     id: payload.newPost.id,
-//     title: payload.newPost.title,
-//     body: payload.newPost.body,
-//   });
-//   if (res.ok) {
-//     let json = await res.json();
-//     dispatch({ type: 'ASYNC', payload: json})
-//   } else {
-//     dispatch({ type: 'ASYNC', payload: "Err! Fetch Failed!" })
-//   }
-// }
 
 function App() {
   return (
@@ -31,26 +17,14 @@ function App() {
         <Route path="/" element={<Protected />}>
           <Route path="clients/:id" element={<ClientDetail/>}/>
           <Route path="signout" element={<SignOut />} />
-          <Route path="user" element={<JarvisNavbar />} />
+          {["user", "*", ""].map((path, index) =>
+            <Route path={path} element={<JarvisNavbar />} key={index} />
+          )}
           <Route path="clients" element={<Clients />} />
         </Route>
       </Routes>
     </BrowserRouter>
   );
 }
-//
-// const mapStateToProps = (state) =>
-// {
-//   console.log("I am state: ", state)
-//   return {
-//     text: state?.form?.text,
-//     foo: state?.form?.foo,
-//     auth: state?.form?.auth,
-//     payload: state?.form?.payload,
-//   }};
-//
-// const ConnectedApp = connect(mapStateToProps)(App);
-//
-// export { ConnectedApp};
 
 export default App;
