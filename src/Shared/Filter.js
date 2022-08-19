@@ -1,9 +1,13 @@
 import {MultiSelect} from "react-multi-select-component";
 import {useEffect, useState} from "react";
 
-const Filter = ({arr, arg, func, val}) => {
+const Filter = ({arr, arg, func, flag}) => {
 
   const [selected, setSelected] = useState([]);
+
+  if (flag === false) {
+    setSelected([]);
+  }
 
   useEffect(() => {
     if (selected.length > 0)

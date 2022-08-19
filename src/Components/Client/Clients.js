@@ -4,7 +4,6 @@ import {useEffect, useState} from "react";
 import JarvisNavbar from "../../Layout/JarvisNavbar";
 import {Link} from "react-router-dom";
 import {Button, Spinner} from "react-bootstrap";
-import { MultiSelect } from "react-multi-select-component";
 import Filter from "../../Shared/Filter";
 
 const Clients = () => {
@@ -20,6 +19,10 @@ const Clients = () => {
       arr.push({value: item.id, label: item.name, arg: arg, inputType: "select"})
     });
     return arr;
+  }
+
+  const resetFilter = () => {
+    setSelected([])
   }
 
   const getData = async () => {
@@ -47,7 +50,6 @@ const Clients = () => {
     }
     else {
        let newArgs = "?";
-       console.log("\nSelected in arguments", selected);
        selected.map((item) => {
          if (item.inputType === "select") {
            newArgs += "f" + "[" + item.arg + ".id]" + "[]=" + item.value + "&";
@@ -95,7 +97,7 @@ const Clients = () => {
         </p>
       ))}</pre>
 
-      <Button>Reset Filters</Button>
+      <Button variant="outline-secondary" onClick={resetFilter}>Reset Filters</Button>
 
       <h3>Business Name</h3>
       <input type="text" onKeyDown={handleBusiness}></input>
