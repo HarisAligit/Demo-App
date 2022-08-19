@@ -3,8 +3,6 @@ import Login from "./Components/Auth/Login";
 import SignOut from "./Components/Auth/SignOut";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Protected from "./Components/Auth/Protected";
-import { connect } from "react-redux";
-import {jarvisClient} from "./BaseEndpoint/jarvisClient";
 import JarvisNavbar from "./Layout/JarvisNavbar";
 import Clients from "./Components/Client/Clients";
 import ClientDetail from "./Components/Client/ClientDetail";
