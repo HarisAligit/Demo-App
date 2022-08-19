@@ -161,7 +161,6 @@ const NewOpportunity = () => {
         onSubmit={onSubmit}
       >
         {(formikProps) => {
-          debugger;
           return (
             <Form className="needs-validation" noValidate="">
               {console.log(validation)}

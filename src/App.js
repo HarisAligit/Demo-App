@@ -6,6 +6,7 @@ import Protected from "./Components/Auth/Protected";
 import JarvisNavbar from "./Layout/JarvisNavbar";
 import Clients from "./Components/Client/Clients";
 import ClientDetail from "./Components/Client/ClientDetail";
+import NewOpportunity from "./Components/FormIk/NewOpportunity";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path={path} element={<JarvisNavbar />} key={index} />
           )}
           <Route path="clients" element={<Clients />} />
+          <Route path="opportunities" element={<NewOpportunity />} />
         </Route>
       </Routes>
     </BrowserRouter>

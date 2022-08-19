@@ -7,16 +7,17 @@ import {Button, Spinner} from "react-bootstrap";
 import Filter from "../../Shared/Filter";
 
 const Clients = () => {
-  const clientType = [], classification = [], salesChannel = [], productCategory = [];
+  const options = [{type: "select", name: "client_types", url: "f[client_type.id][]=", options: null}, {type: "select", name: "product_categories", url: "f[product_categories.id][]=", options: null}, {type: "select", name: "sales_channels", url: "f[sales_channel.id][]=", options: null}, {type: "select", name: "classifications", url: "f[classification.id][]=", options: null}, {type: "input", value: "", key: "s[name]="}];
   const [getClients, { data }] = useGetClientsMutation();
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState({"client_type.id": [], "product_categories.id": [], "sales_channel.id": [], "classification.id": []});
   const [args, setArgs] = useState("false");
-  const [referenceNumberInput, setReferenceNumberInput] = useState(null);
   const [businessName, setBusinessName] = useState('');
 
-  const pushFilterType = (params, arr, arg) => {
+
+  const pushOptions = (params) => {
+    const arr = [];
     params.map((item) => {
-      arr.push({value: item.id, label: item.name, arg: arg, inputType: "select"})
+      arr.push({value: item.id, label: item.name})
     });
     return arr;
   }
@@ -43,43 +44,42 @@ const Clients = () => {
     getData();
   }, [args])
 
-  useEffect(() => {
-    if (selected.length === 0)
-    {
-      setArgs("false");
-    }
-    else {
-       let newArgs = "?";
-       selected.map((item) => {
-         if (item.inputType === "select") {
-           newArgs += "f" + "[" + item.arg + ".id]" + "[]=" + item.value + "&";
-         }
-         else if (item.inputType === "input") {
-           newArgs += "s" + "[" + item.arg + "]=" + item.value + "&";
-         }
-       });
-       setArgs(newArgs.slice(0, -1));
-    }
-  }, [selected])
+  // useEffect(() => {
+  //   if (selected.length === 0)
+  //   {
+  //     setArgs("false");
+  //   }
+  //   else {
+  //      let newArgs = "?";
+  //      selected.map((item) => {
+  //        if (item.inputType === "select") {
+  //          newArgs += "f" + "[" + item.arg + ".id]" + "[]=" + item.value + "&";
+  //        }
+  //        else if (item.inputType === "input") {
+  //          newArgs += "s" + "[" + item.arg + "]=" + item.value + "&";
+  //        }
+  //      });
+  //      setArgs(newArgs.slice(0, -1));
+  //   }
+  // }, [selected])
 
   useEffect(() => {
     if (!data?.success === true) {
       getData();
     }
     else {
-      if (clientType.length === 0) {
-        pushFilterType(data.client_types, clientType, "client_type");
-        pushFilterType(data.classifications, classification, "classification");
-        pushFilterType(data.sales_channels, salesChannel, "sales_channel");
-        pushFilterType(data.product_categories, productCategory, "product_categories");
-      }
+      options.forEach((item) => {
+        if (item.type == "select") {
+          item.options = pushOptions(data[item.name]);
+        }
+      })
     }
   }, [data, args]);
 
   const handleBusiness = (e) => {
      if (e.key === 'Enter') {
        console.log("\nEnter Business Name: ", businessName);
-       setSelected(selected => [...selected, {value: businessName, arg: "name", inputType: "input"}]);
+       // setSelected(selected => [...selected, {value: businessName, arg: "name", inputType: "input"}]);
        console.log("new SElect", selected);
      }
      else {
@@ -91,25 +91,22 @@ const Clients = () => {
   return (
     <>
       <JarvisNavbar />
-      <pre>{selected.map((item) => (
-        <p>
-          {item.label}
-        </p>
-      ))}</pre>
+      {/*<pre>{selected.map((item) => (*/}
+      {/*  <p>*/}
+      {/*    {item.label}*/}
+      {/*  </p>*/}
+      {/*))}</pre>*/}
 
       <Button variant="outline-secondary" onClick={resetFilter}>Reset Filters</Button>
 
       <h3>Business Name</h3>
       <input type="text" onKeyDown={handleBusiness}></input>
-      <Filter arr={clientType} arg={"Client Type"} func={setSelected} val={selected}/>
-      <Filter arr={classification} arg={"Classification"} func={setSelected} val={selected}/>
-      <Filter arr={salesChannel} arg={"Sales Channel"} func={setSelected} val={selected}/>
-      <Filter arr={productCategory} arg={"Product Categories"} func={setSelected} val={selected}/>
       <br /><br />
 
     {!data?.success === true ? <><Spinner animation="border" role="status">
       </Spinner>
-        <h5>Loading...</h5> </> :
+        <h5>Loading...</h5> </> : <>
+      <Filter list={options} />
     <Table striped bordered hover>
       <thead>
       <tr>
@@ -141,7 +138,8 @@ const Clients = () => {
             </tbody>
             </>
           ))}
-    </Table>}
+    </Table>
+    </>}
     </>
   );
 };
