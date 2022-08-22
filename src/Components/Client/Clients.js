@@ -7,12 +7,12 @@ import {Button, Spinner} from "react-bootstrap";
 import Filter from "../../Shared/Filter";
 
 const Clients = () => {
-  const options = [{type: "select", name: "client_types", url: "f[client_type.id][]=", options: null}, {type: "select", name: "product_categories", url: "f[product_categories.id][]=", options: null}, {type: "select", name: "sales_channels", url: "f[sales_channel.id][]=", options: null}, {type: "select", name: "classifications", url: "f[classification.id][]=", options: null}, {type: "input", value: "", key: "s[name]="}];
+  const options = [{type: "select", name: "client_types", key: "client_type.id", url: "f[client_type.id][]=", options: []}, {type: "select", name: "product_categories", key: "product_categories.id",  url: "f[product_categories.id][]=", options: []}, {type: "select", name: "sales_channels", key: "sales_channel.id", url: "f[sales_channel.id][]=", options: []}, {type: "select", name: "classifications", key: "classification.id", url: "f[classification.id][]=", options: []}, {type: "input", value: "", key: "s[name]="}];
   const [getClients, { data }] = useGetClientsMutation();
   const [selected, setSelected] = useState({"client_type.id": [], "product_categories.id": [], "sales_channel.id": [], "classification.id": []});
   const [args, setArgs] = useState("false");
   const [businessName, setBusinessName] = useState('');
-
+  const [loaded, setLoaded] = useState([]);
 
   const pushOptions = (params) => {
     const arr = [];
@@ -44,24 +44,27 @@ const Clients = () => {
     getData();
   }, [args])
 
-  // useEffect(() => {
-  //   if (selected.length === 0)
-  //   {
-  //     setArgs("false");
-  //   }
-  //   else {
-  //      let newArgs = "?";
-  //      selected.map((item) => {
-  //        if (item.inputType === "select") {
-  //          newArgs += "f" + "[" + item.arg + ".id]" + "[]=" + item.value + "&";
-  //        }
-  //        else if (item.inputType === "input") {
-  //          newArgs += "s" + "[" + item.arg + "]=" + item.value + "&";
-  //        }
-  //      });
-  //      setArgs(newArgs.slice(0, -1));
-  //   }
-  // }, [selected])
+  useEffect(() => {
+    // if (selected.length === 0)
+    // {
+    //   setArgs("false");
+    // }
+    // else {
+    //    let newArgs = "?";
+    //    loaded.map((item) => {
+    //      if (item.inputType === "select") {
+    //        selected[item.key].map(() => {
+    //          newArgs += item.url + "&";
+    //        })
+    //      }
+    //      else if (item.inputType === "input") {
+    //        // newArgs += "s" + "[" + item.arg + "]=" + item.value + "&";
+    //      }
+    //    });
+    //    setArgs(newArgs.slice(0, -1));
+    // }
+    console.log("\nSelection made: ", selected);
+  }, [selected])
 
   useEffect(() => {
     if (!data?.success === true) {
@@ -73,6 +76,7 @@ const Clients = () => {
           item.options = pushOptions(data[item.name]);
         }
       })
+      setLoaded(options);
     }
   }, [data, args]);
 
@@ -90,10 +94,10 @@ const Clients = () => {
   // f[product_categories.id][]=5&f[sales_channel.id][]=2&f[client_type.id][]=4&f[classification.id][]=4
   return (
     <>
-      <JarvisNavbar />
+      {/*<JarvisNavbar />*/}
       {/*<pre>{selected.map((item) => (*/}
       {/*  <p>*/}
-      {/*    {item.label}*/}
+      {/*    {item}*/}
       {/*  </p>*/}
       {/*))}</pre>*/}
 
@@ -106,7 +110,7 @@ const Clients = () => {
     {!data?.success === true ? <><Spinner animation="border" role="status">
       </Spinner>
         <h5>Loading...</h5> </> : <>
-      <Filter list={options} />
+      <Filter objArr={selected} list={loaded} func={setSelected} />
     <Table striped bordered hover>
       <thead>
       <tr>

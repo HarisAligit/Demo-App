@@ -1,8 +1,14 @@
 import {MultiSelect} from "react-multi-select-component";
 import {useEffect, useState} from "react";
 
-const Multi = ({name, options}) => {
+const Multi = ({name, options, func, nameid, objArr}) => {
   const [selected, setSelected] = useState([]);
+
+  useEffect(() => {
+    func({...objArr, [nameid]: selected.map(s => s.value)});
+
+  }, [selected])
+
   return (
     <div>
       <h2>{name}</h2>
@@ -16,19 +22,12 @@ const Multi = ({name, options}) => {
   );
 }
 
-const Filter = ({list}) => {
+const Filter = ({list, func, objArr}) => {
 
-  // useEffect(() => {
-  //   if (selected.length > 0)
-  //   {
-  //     func(val => [...val, selected.at(- 1)])
-  //     console.log("\nSelected in Filter: ", selected);
-  //   }
-  // }, [selected])
   return(
     <div>
       {list.map((item) => {
-          return (item.type === "select" ? <Multi name={item.name} options={item.options}/> : <p>Input Component</p>)
+          return (item.type === "select" ? <Multi name={item.name} options={item.options} nameid={item.key} func={func} objArr={objArr}/> : <p>Input Component</p>)
         }
       )}
     </div>
