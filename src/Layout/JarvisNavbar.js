@@ -13,6 +13,7 @@ const JarvisNavbar = () => {
           <Nav className="me-auto">
             <Nav.Link href="/opportunities">Opportunities</Nav.Link>
             <Nav.Link href="/clients">Clients</Nav.Link>
+            <Nav.Link href="/signout">SignOut</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

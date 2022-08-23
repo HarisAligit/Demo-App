@@ -9,11 +9,18 @@ const jarvisSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addMatcher(jarvisApi?.endpoints.signIn.matchFulfilled, (state, { payload }) => {
-      const userInstance = state.user.some(item => item['auth']);
-      if (userInstance === false) {
+        const index = state.user.findIndex(object => {
+          return object.auth === true;
+        });
+
+        if (index === -1) {
         state.user.push({auth: true, accessToken: payload.accessToken, uid: payload.uid, client: payload.client})
       }
-      debugger;
+      else {
+        state.user[index].accessToken = payload.accessToken;
+        state.user[index].uid = payload.uid;
+        state.user[index].client = payload.client
+      }
     }
     )},
 })
