@@ -5,21 +5,11 @@ import {useGetClientDetailByIDQuery} from "../../Redux/ApiProvider/jarvisAPI";
 import JarvisNavbar from "../../Layout/JarvisNavbar";
 
 const ClientDetail = () => {
-  const [getClientDetailByID, { data }] = useGetClientDetailByIDQuery();
-
   const { id } = useParams();
-  const getData = async () => {
-    try {
-      await getClientDetailByID(id).unwrap();
-    }
-    catch (err) {
-      console.log(`Error: ${err}`)
-    }
-  }
-  var date;
+  const { data } = useGetClientDetailByIDQuery(id);
+
   useEffect(() => {
-    if (!data?.success === true) getData();
-    console.log("Data: ", data);
+    if (data?.success === true) console.log("Data: ", data);
   }, [data]);
   return (
     <>
@@ -43,7 +33,7 @@ const ClientDetail = () => {
                   <Card.Text>Zone: {data?.client?.zone?.name}</Card.Text>
                   <Card.Text>Classification: {data?.client?.classification?.name}</Card.Text>
                   <Card.Text>Upcoming Payment: {data?.client?.next_due_payment === null ? '  ---- ' : data?.client?.next_due_payment}</Card.Text>
-                  <Card.Text>Contract Expiry: {new Date(data?.client?.next_completing_contract?.end_date).getDate()}/{new Date(data.client.next_completing_contract.end_date).getMonth()}/{new Date(data.client.next_completing_contract.end_date).getFullYear()}</Card.Text>
+                  <Card.Text>Contract Expiry: {new Date(data?.client?.next_completing_contract?.end_date).getDate()}/{new Date(data?.client?.next_completing_contract?.end_date).getMonth()}/{new Date(data?.client?.next_completing_contract?.end_date).getFullYear()}</Card.Text>
                   <Card.Text>Active Contracts: {data?.client?.active_contracts_count}</Card.Text>
                   <Card.Text href="">Assignee: {data?.client?.assignee?.name}</Card.Text>
                 </Card.Body>
