@@ -1,8 +1,10 @@
 import {Alert, Button} from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import {useEffect, useState} from "react";
-import { useSignInMutation } from '../../Redux/Slice/authSlice'
+import { useSignInMutation } from '../../Redux/ApiProvider/jarvisAPI'
 import {Navigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {addToUser} from "../../Redux/ApiProvider/jarvisSlice";
 
 const Login = () => {
 
@@ -20,9 +22,6 @@ const Login = () => {
     if (data)
     {
       localStorage.setItem("isAuthenticated", true);
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("client", data.client);
-      localStorage.setItem("uid", data.uid);
       setAlert(2)
       console.log("\nData: ", data);
     }
