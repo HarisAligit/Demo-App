@@ -46,7 +46,6 @@ const Clients = () => {
       setArgs("false");
     }
     else {
-      debugger;
       options.map((item) => {
         if (item.type === "select") {
           console.log(selected[item.key]);
