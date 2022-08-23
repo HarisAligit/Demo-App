@@ -1,11 +1,11 @@
 import {useParams} from "react-router-dom";
 import {useEffect} from "react";
 import {Spinner, Card} from "react-bootstrap";
-import {useGetClientDetailByIDMutation} from "../../Redux/Slice/authSlice";
+import {useGetClientDetailByIDQuery} from "../../Redux/ApiProvider/jarvisAPI";
 import JarvisNavbar from "../../Layout/JarvisNavbar";
 
 const ClientDetail = () => {
-  const [getClientDetailByID, { data }] = useGetClientDetailByIDMutation();
+  const [getClientDetailByID, { data }] = useGetClientDetailByIDQuery();
 
   const { id } = useParams();
   const getData = async () => {
@@ -19,6 +19,7 @@ const ClientDetail = () => {
   var date;
   useEffect(() => {
     if (!data?.success === true) getData();
+    console.log("Data: ", data);
   }, [data]);
   return (
     <>

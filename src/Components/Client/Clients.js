@@ -1,18 +1,21 @@
 import Table from "react-bootstrap/Table";
-import { useGetClientsMutation } from "../../Redux/Slice/authSlice";
+import { useGetClientsQuery } from "../../Redux/ApiProvider/jarvisAPI";
 import {useEffect, useState} from "react";
 import JarvisNavbar from "../../Layout/JarvisNavbar";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {Button, Spinner} from "react-bootstrap";
 import Filter from "../../Shared/Filter";
+import {useDispatch} from "react-redux";
 
 const Clients = () => {
-  const options = [{type: "select", name: "client_types", key: "client_type.id", url: "f[client_type.id][]=", options: []}, {type: "select", name: "product_categories", key: "product_categories.id",  url: "f[product_categories.id][]=", options: []}, {type: "select", name: "sales_channels", key: "sales_channel.id", url: "f[sales_channel.id][]=", options: []}, {type: "select", name: "classifications", key: "classification.id", url: "f[classification.id][]=", options: []}, {type: "input", value: "", key: "s[name]="}];
-  const [getClients, { data }] = useGetClientsMutation();
-  const [selected, setSelected] = useState({"client_type.id": [], "product_categories.id": [], "sales_channel.id": [], "classification.id": []});
-  const [args, setArgs] = useState("false");
+  const options = [{type: "select", name: "client_types", key: "clients_type.id", url: "f[client_type.id][]=", options: []}, {type: "select", name: "product_categories", key: "product_categories.id",  url: "f[product_categories.id][]=", options: []}, {type: "select", name: "sales_channels", key: "sales_channel.id", url: "f[sales_channel.id][]=", options: []}, {type: "select", name: "classifications", key: "classification.id", url: "f[classification.id][]=", options: []}, {type: "input", key: "name", url: "s[name]="}];
+  const [selected, setSelected] = useState({"clients_type.id": [], "product_categories.id": [], "sales_channel.id": [], "classification.id": []});
+  const [args, setArgs] = useState('');
+  const {data} = useGetClientsQuery(args);
   const [businessName, setBusinessName] = useState('');
   const [loaded, setLoaded] = useState([]);
+  const [page, setPage] = useState(1)
+  let navigate = useNavigate();
 
   const pushOptions = (params) => {
     const arr = [];
@@ -26,91 +29,71 @@ const Clients = () => {
     setSelected([])
   }
 
-  const getData = async () => {
-    try {
-      if (args === "false") {
-        await getClients().unwrap();
-      }
-      else {
-        await getClients(args).unwrap();
-      }
-    }
-    catch (err) {
-      console.log(`Error: ${err}`)
+  const changePage = (val) => {
+    if (val != 0)
+    {
+      setPage(val);
     }
   }
 
   useEffect(() => {
-    getData();
-  }, [args])
-
-  useEffect(() => {
-    // if (selected.length === 0)
-    // {
-    //   setArgs("false");
-    // }
-    // else {
-    //    let newArgs = "?";
-    //    loaded.map((item) => {
-    //      if (item.inputType === "select") {
-    //        selected[item.key].map(() => {
-    //          newArgs += item.url + "&";
-    //        })
-    //      }
-    //      else if (item.inputType === "input") {
-    //        // newArgs += "s" + "[" + item.arg + "]=" + item.value + "&";
-    //      }
-    //    });
-    //    setArgs(newArgs.slice(0, -1));
-    // }
-    console.log("\nSelection made: ", selected);
-  }, [selected])
-
-  useEffect(() => {
-    if (!data?.success === true) {
-      getData();
+    let res = Object.keys(selected).every(function(key){
+        return selected[key].length === 0
+    });
+    let newArgs = "?";
+    if (res === true)
+    {
+      setArgs("false");
     }
     else {
-      options.forEach((item) => {
-        if (item.type == "select") {
-          item.options = pushOptions(data[item.name]);
+      debugger;
+      options.map((item) => {
+        if (item.type === "select") {
+          console.log(selected[item.key]);
+          selected[item.key].forEach((val) => {
+            newArgs += item.url + val + "&";
+          })
+        } else if (item.type === "input") {
+          // if (selected[item.key] !== "") {
+          //   newArgs += item.url + selected[item.key] + "&";
+          // }
         }
-      })
-      setLoaded(options);
+      });
     }
-  }, [data, args]);
+      newArgs += "page=" + page;
+      setArgs(newArgs);
+      // console.log("\nNew Link", navigate(-1));
+  }, [selected, page])
 
-  const handleBusiness = (e) => {
-     if (e.key === 'Enter') {
-       console.log("\nEnter Business Name: ", businessName);
-       // setSelected(selected => [...selected, {value: businessName, arg: "name", inputType: "input"}]);
-       console.log("new SElect", selected);
-     }
-     else {
-       setBusinessName(e.target.value)
-     }
-  }
+  useEffect(() => {
+    if (data?.success === true) {
+        if (loaded.length === 0) {
+          options.forEach((item) => {
+            if (item.type == "select") {
+              item.options = pushOptions(data[item.name]);
+            }
+          })
+          console.log('\nSetting Data: ');
+          setLoaded(options);
+        }
+      }
+  }, [data]);
 
-  // f[product_categories.id][]=5&f[sales_channel.id][]=2&f[client_type.id][]=4&f[classification.id][]=4
   return (
     <>
-      {/*<JarvisNavbar />*/}
+      <JarvisNavbar />
       {/*<pre>{selected.map((item) => (*/}
       {/*  <p>*/}
       {/*    {item}*/}
       {/*  </p>*/}
       {/*))}</pre>*/}
 
-      <Button variant="outline-secondary" onClick={resetFilter}>Reset Filters</Button>
-
-      <h3>Business Name</h3>
-      <input type="text" onKeyDown={handleBusiness}></input>
-      <br /><br />
+      <Button variant="outline-secondary" onClick={() => resetFilter}>Reset Filters</Button>
 
     {!data?.success === true ? <><Spinner animation="border" role="status">
       </Spinner>
         <h5>Loading...</h5> </> : <>
-      <Filter objArr={selected} list={loaded} func={setSelected} />
+      <Filter objArr={selected} list={loaded} func={setSelected} setName={setBusinessName} title={"Business Name"} Name={businessName}/>
     <Table striped bordered hover>
       <thead>
       <tr>
@@ -143,6 +126,8 @@ const Clients = () => {
             </>
           ))}
     </Table>
+      <Button variant="secondary" onClick={() => changePage(page - 1)}>Prev</Button>
+      <Button variant="secondary" onClick={() => changePage(page + 1)}>Next</Button>
     </>}
     </>
   );

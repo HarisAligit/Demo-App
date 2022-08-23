@@ -5,8 +5,17 @@ export const jarvisApi = createApi({
   reducerPath: "jarvisApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "https://staging-olxpk.jarvisempg.com/api/crm/",
+    prepareHeaders: (headers, { getState }) => {
+      const user = getState().persistedReducer.user;
 
-  }),
+      const userInstance = user.find(item => item['auth'] === true);
+      if (userInstance) {
+        headers.set('access-token', userInstance.accessToken);
+        headers.set('uid', userInstance.uid);
+        headers.set('client', userInstance.client);
+      }
+      return headers
+  }}),
   tagTypes: ["Post"],
   endpoints: (builder) => ({
     signIn: builder.mutation({
@@ -29,31 +38,24 @@ export const jarvisApi = createApi({
       tagTypes: ["Post"],
     }),
     getOpportunities: builder.mutation({
-      query: () => ({
+      query: () => {
+
+        return({
         url: "/opportunities",
         // headers: {
         //   'Content-type': 'application/json; charset=UTF-8',
         // },
-      }),
+      })},
     }),
-    getClients: builder.mutation({
-      query: (id= '') => ({
+    getClients: builder.query({
+      query: (id= '') => {
+        return({
         url: `/clients${id}`,
-        headers: {
-          'access-token': localStorage.getItem("accessToken"),
-          'client': localStorage.getItem("client"),
-          'uid': localStorage.getItem("uid"),
-        },
-      }),
+      })},
     }),
-    getClientDetailByID: builder.mutation({
+    getClientDetailByID: builder.query({
       query: (id) => ({
         url: `/clients/${id}`,
-        headers: {
-          'access-token': localStorage.getItem("accessToken"),
-          'client': localStorage.getItem("client"),
-          'uid': localStorage.getItem("uid"),
-        },
       }),
     }),
   }),
@@ -61,7 +63,7 @@ export const jarvisApi = createApi({
 
 export const {
   useSignInMutation,
-  useGetClientDetailByIDMutation,
+  useGetClientDetailByIDQuery,
   useGetOpportunitiesQuery,
-  useGetClientsMutation,
+  useGetClientsQuery,
 } = jarvisApi;
