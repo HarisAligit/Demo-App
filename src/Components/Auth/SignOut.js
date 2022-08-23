@@ -1,6 +1,7 @@
 import {Button} from "react-bootstrap";
 import {Navigate, useNavigate} from "react-router-dom";
 import {Alert} from "react-bootstrap";
+import JarvisNavbar from "../../Layout/JarvisNavbar";
 
 const SignOut = () => {
 
@@ -23,6 +24,8 @@ const SignOut = () => {
 
   return (
     <div>
+      <JarvisNavbar />
+      <br /> <br />
       <Button variant="danger" onClick={() => signOut()}>Sign Out</Button>
     </div>
   )
