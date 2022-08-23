@@ -1,7 +1,7 @@
 import {useParams} from "react-router-dom";
 import {useEffect} from "react";
 import {Spinner, Card} from "react-bootstrap";
-import {useGetClientDetailByIDQuery} from "../../Redux/ApiProvider/jarvisAPI";
+import {useGetClientDetailByIDQuery} from "../../Redux/ApiProvider/jarvisAPIAuth";
 import JarvisNavbar from "../../Layout/JarvisNavbar";
 
 const ClientDetail = () => {

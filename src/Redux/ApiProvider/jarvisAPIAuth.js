@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export const jarvisApi = createApi({
-  reducerPath: "jarvisApi",
+export const jarvisAPIAuth = createApi({
+  reducerPath: "jarvisAPIAuth",
   baseQuery: fetchBaseQuery({
     baseUrl: "https://staging-olxpk.jarvisempg.com/api/crm/",
     prepareHeaders: (headers, { getState }) => {
-      const user = getState().persistedReducer.user;
+      const user = getState().user.user;
 
       const userInstance = user.find(item => item['auth'] === true);
       if (userInstance) {
@@ -18,33 +18,10 @@ export const jarvisApi = createApi({
   }}),
   tagTypes: ["Post"],
   endpoints: (builder) => ({
-    signIn: builder.mutation({
-      query: (payload) => ({
-        url: "/auth/sign_in",
-        method: "POST",
-        body: payload,
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      }),
-      transformResponse(response, meta) {
-        return {
-          response,
-          accessToken: meta.response.headers.get("access-token"),
-          client: meta.response.headers.get("client"),
-          uid: meta.response.headers.get("uid"),
-        };
-      },
-      tagTypes: ["Post"],
-    }),
     getCurrentUser: builder.mutation({
       query: () => {
-
         return({
-        url: "/opportunities",
-        // headers: {
-        //   'Content-type': 'application/json; charset=UTF-8',
-        // },
+        url: "users/current",
       })},
     }),
     getClients: builder.query({
@@ -64,6 +41,6 @@ export const jarvisApi = createApi({
 export const {
   useSignInMutation,
   useGetClientDetailByIDQuery,
-  useGetOpportunitiesQuery,
+  useGetCurrentUserMutation,
   useGetClientsQuery,
-} = jarvisApi;
+} = jarvisAPIAuth;

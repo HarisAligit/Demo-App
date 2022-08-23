@@ -1,20 +1,10 @@
 import Table from "react-bootstrap/Table";
-import { useGetClientsQuery } from "../../Redux/ApiProvider/jarvisAPI";
+import { useGetClientsQuery } from "../../Redux/ApiProvider/jarvisAPIAuth";
 import {useEffect, useState} from "react";
 import JarvisNavbar from "../../Layout/JarvisNavbar";
 import {Link, useNavigate} from "react-router-dom";
 import {Button, Spinner, Pagination} from "react-bootstrap";
 import Filter from "../../Shared/Filter";
-
-// let active = 2;
-// let items = [];
-// for (let number = 1; number <= 5; number++) {
-//   items.push(
-//     <Pagination.Item key={number} active={number === active}>
-//       {number}
-//     </Pagination.Item>,
-//   );
-// }
 
 const Clients = () => {
   const options = [{type: "select", name: "client_types", key: "clients_type.id", url: "f[client_type.id][]=", options: []}, {type: "select", name: "product_categories", key: "product_categories.id",  url: "f[product_categories.id][]=", options: []}, {type: "select", name: "sales_channels", key: "sales_channel.id", url: "f[sales_channel.id][]=", options: []}, {type: "select", name: "classifications", key: "classification.id", url: "f[classification.id][]=", options: []}, {type: "input", key: "name", url: "s[name]="}];
@@ -94,7 +84,6 @@ const Clients = () => {
     }
       newArgs += "page=" + page;
       setArgs(newArgs);
-      // console.log("\nNew Link", navigate(-1));
   }, [selected, page])
 
   useEffect(() => {

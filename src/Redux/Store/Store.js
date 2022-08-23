@@ -1,39 +1,26 @@
 import {configureStore} from "@reduxjs/toolkit";
-import {jarvisApi} from "../ApiProvider/jarvisAPI";
+import {jarvisAPIAuth} from "../ApiProvider/jarvisAPIAuth";
+import {jarvisAPIOpen} from "../ApiProvider/jarvisAPIOpen";
 import storage from 'redux-persist/lib/storage';
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { jarvisReducer } from "../ApiProvider/jarvisSlice";
 import {persistReducer, persistStore} from "redux-persist";
-
-// const persistConfig = {
-//   key: 'root',
-//   storage
-// }
-//
-// const persistedReducer = persistReducer(persistConfig, {
-//   [jarvisApi.reducerPath]: jarvisApi.reducer,
-// })
+import {combineReducers} from "@reduxjs/toolkit";
 
 const persistConfig = {
   key: 'root',
   storage
 }
 
-const persistedReducer = persistReducer(persistConfig, jarvisReducer)
+const rootReducer = combineReducers({[jarvisAPIAuth.reducerPath]: jarvisAPIAuth.reducer, [jarvisAPIOpen.reducerPath]: jarvisAPIOpen.reducer, user: jarvisReducer})
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
-  reducer: {
-    [jarvisApi.reducerPath]: jarvisApi.reducer,
-    persistedReducer,
-  },
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false}).concat(jarvisApi.middleware),
+    getDefaultMiddleware({ serializableCheck: false}).concat([jarvisAPIAuth.middleware, jarvisAPIOpen.middleware]),
 });
 
 setupListeners(store.dispatch)
-
-// export const addStore = configureStore({
-//   reducer: persistedReducer,
-// })
 
 export const persistor = persistStore(store)

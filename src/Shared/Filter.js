@@ -23,7 +23,7 @@ const Multi = ({name, options, func, nameid, objArr, setPage}) => {
   );
 }
 
-const InputFilter = ({setName, Name, title, func, objArr, setPage}) => {
+const InputFilter = ({title, func, objArr, setPage}) => {
 
   const [businessName, setBusinessName] = useState('')
 
@@ -49,17 +49,17 @@ const InputFilter = ({setName, Name, title, func, objArr, setPage}) => {
 
 // func is the setState function of the selected object
 // objArr is the selected object itself
-const Filter = ({list, func, objArr, title, setName, Name, setPage}) => {
+const Filter = ({list, func, objArr, title, setPage}) => {
 
   return(
     <div>
       {list.map((item) => {
-          return (item.type === "select" ? <Multi name={item.name} options={item.options} nameid={item.key} func={func} objArr={objArr} setPage={setPage}/> : <InputFilter setName={setName} Name={Name} title={title} func={func} objArr={objArr} setPage={setPage}/>)
+          return (item.type === "select" ? <Multi name={item.name} options={item.options} nameid={item.key} func={func} objArr={objArr} setPage={setPage}/> : <InputFilter title={title} func={func} objArr={objArr} setPage={setPage}/>)
         }
       )}
     </div>
   )
 
 };
-// <InputFilter title={title} setName={setName} Name={Name} func={func} objArr={objArr}/>
+
 export default Filter;

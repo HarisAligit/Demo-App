@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App';
 import { ApiProvider } from '@reduxjs/toolkit/dist/query/react';
-import {jarvisApi} from "./Redux/ApiProvider/jarvisAPI";
+import {jarvisAPIAuth} from "./Redux/ApiProvider/jarvisAPIAuth";
 import reportWebVitals from './reportWebVitals';
 import {Provider} from "react-redux";
 import {addStore, store, persistor} from "./Redux/Store/Store";
@@ -14,9 +14,7 @@ root.render(
   <React.StrictMode>
     <PersistGate persistor={persistor}>
       <Provider store={store}>
-        {/*<ApiProvider api={jarvisApi} >*/}
           <App />
-        {/*</ApiProvider>*/}
       </Provider>
     </PersistGate>
   </React.StrictMode>
