@@ -23,11 +23,12 @@ const Multi = ({name, options, func, nameid, objArr, setPage}) => {
   );
 }
 
-const InputFilter = ({setName, Name, title, func, objArr}) => {
+const InputFilter = ({setName, Name, title, func, objArr, setPage}) => {
 
   const handleInput = (e) => {
     if (e.key === 'Enter') {
       func({...objArr, "name": Name});
+      setPage(1);
     } else {
       setName(e.target.value)
     }
@@ -51,7 +52,7 @@ const Filter = ({list, func, objArr, title, setName, Name, setPage}) => {
   return(
     <div>
       {list.map((item) => {
-          return (item.type === "select" ? <Multi name={item.name} options={item.options} nameid={item.key} func={func} objArr={objArr} setPage={setPage}/> : <></>)
+          return (item.type === "select" ? <Multi name={item.name} options={item.options} nameid={item.key} func={func} objArr={objArr} setPage={setPage}/> : <InputFilter setName={setName} Name={Name} title={title} func={func} objArr={objArr} setPage={setPage}/>)
         }
       )}
     </div>

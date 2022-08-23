@@ -37,7 +37,7 @@ export const jarvisApi = createApi({
       },
       tagTypes: ["Post"],
     }),
-    getOpportunities: builder.mutation({
+    getCurrentUser: builder.mutation({
       query: () => {
 
         return({

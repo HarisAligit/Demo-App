@@ -18,7 +18,7 @@ import Filter from "../../Shared/Filter";
 
 const Clients = () => {
   const options = [{type: "select", name: "client_types", key: "clients_type.id", url: "f[client_type.id][]=", options: []}, {type: "select", name: "product_categories", key: "product_categories.id",  url: "f[product_categories.id][]=", options: []}, {type: "select", name: "sales_channels", key: "sales_channel.id", url: "f[sales_channel.id][]=", options: []}, {type: "select", name: "classifications", key: "classification.id", url: "f[classification.id][]=", options: []}, {type: "input", key: "name", url: "s[name]="}];
-  const [selected, setSelected] = useState({"clients_type.id": [], "product_categories.id": [], "sales_channel.id": [], "classification.id": []});
+  const [selected, setSelected] = useState({"clients_type.id": [], "product_categories.id": [], "sales_channel.id": [], "classification.id": [], "name": ""});
   const [args, setArgs] = useState('');
   const {data} = useGetClientsQuery(args);
   const [businessName, setBusinessName] = useState('');
@@ -64,7 +64,15 @@ const Clients = () => {
 
   useEffect(() => {
     let res = Object.keys(selected).every(function(key){
+      if (typeof selected[key] !== 'string') {
         return selected[key].length === 0
+      }
+      else if (selected[key] !== '') {
+        return false;
+      }
+      else {
+        return true;
+      }
     });
     let newArgs = "?";
     if (res === true)
@@ -79,9 +87,9 @@ const Clients = () => {
             newArgs += item.url + val + "&";
           })
         } else if (item.type === "input") {
-          // if (selected[item.key] !== "") {
-          //   newArgs += item.url + selected[item.key] + "&";
-          // }
+          if (selected[item.key] !== "") {
+            newArgs += item.url + selected[item.key] + "&";
+          }
         }
       });
     }
