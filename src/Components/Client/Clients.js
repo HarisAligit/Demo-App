@@ -3,9 +3,18 @@ import { useGetClientsQuery } from "../../Redux/ApiProvider/jarvisAPI";
 import {useEffect, useState} from "react";
 import JarvisNavbar from "../../Layout/JarvisNavbar";
 import {Link, useNavigate} from "react-router-dom";
-import {Button, Spinner} from "react-bootstrap";
+import {Button, Spinner, Pagination} from "react-bootstrap";
 import Filter from "../../Shared/Filter";
-import {useDispatch} from "react-redux";
+
+// let active = 2;
+// let items = [];
+// for (let number = 1; number <= 5; number++) {
+//   items.push(
+//     <Pagination.Item key={number} active={number === active}>
+//       {number}
+//     </Pagination.Item>,
+//   );
+// }
 
 const Clients = () => {
   const options = [{type: "select", name: "client_types", key: "clients_type.id", url: "f[client_type.id][]=", options: []}, {type: "select", name: "product_categories", key: "product_categories.id",  url: "f[product_categories.id][]=", options: []}, {type: "select", name: "sales_channels", key: "sales_channel.id", url: "f[sales_channel.id][]=", options: []}, {type: "select", name: "classifications", key: "classification.id", url: "f[classification.id][]=", options: []}, {type: "input", key: "name", url: "s[name]="}];
@@ -16,6 +25,23 @@ const Clients = () => {
   const [loaded, setLoaded] = useState([]);
   const [page, setPage] = useState(1)
   let navigate = useNavigate();
+
+  const Paginate = () => {
+
+    let paginationData = data?.pagination;
+
+    return (
+      <Pagination>
+        {paginationData.prev_page? <Pagination.First  onClick={() => changePage(1)}/>: <Pagination.First disabled/>}
+        {paginationData.prev_page? <Pagination.Prev onClick={() => changePage(paginationData.prev_page)}/>: <Pagination.Prev disabled/>}
+        <Pagination.Ellipsis />
+        <Pagination.Item active onClick={() => changePage(paginationData.current_page)}>{paginationData.current_page}</Pagination.Item>
+        <Pagination.Ellipsis />
+        {paginationData.next_page? <Pagination.Next onClick={() => changePage(paginationData.next_page)}/>: <Pagination.Next disabled/>}
+        {paginationData.next_page? <Pagination.Last />: <Pagination.Last disabled/>}
+      </Pagination>
+    );
+  }
 
   const pushOptions = (params) => {
     const arr = [];
@@ -92,7 +118,7 @@ const Clients = () => {
     {!data?.success === true ? <><Spinner animation="border" role="status">
       </Spinner>
         <h5>Loading...</h5> </> : <>
-      <Filter objArr={selected} list={loaded} func={setSelected} setName={setBusinessName} title={"Business Name"} Name={businessName}/>
+      <Filter objArr={selected} list={loaded} func={setSelected} setName={setBusinessName} title={"Business Name"} Name={businessName} setPage={setPage}/>
     <Table striped bordered hover>
       <thead>
       <tr>
@@ -111,22 +137,21 @@ const Clients = () => {
             <>
               <tbody>
               <tr>
-              <td>{item.reference_number}</td>
+              <td>{item?.reference_number}</td>
                 <td>{item.name}</td>
-                <td>{item.client_type.name}</td>
+                <td>{item.client_type?.name}</td>
                 <td>{item.status.name}</td>
-                <td>{item.classification.name}</td>
-                <td>{item.sales_channel.name}</td>
-                <td>{item.contacts[0].name}</td>
-                <td>{item.contacts[0].phone}</td>
-                <td><Link to={`/clients/${item.id}`}>View Details</Link></td>
+                <td>{item.classification?.name}</td>
+                <td>{item.sales_channel?.name}</td>
+                <td>{item.contacts[0]?.name}</td>
+                <td>{item.contacts[0]?.phone}</td>
+                <td><Link to={`/clients/${item?.id}`}>View Details</Link></td>
               </tr>
             </tbody>
             </>
           ))}
     </Table>
-      <Button variant="secondary" onClick={() => changePage(page - 1)}>Prev</Button>
-      <Button variant="secondary" onClick={() => changePage(page + 1)}>Next</Button>
+      <Paginate />
     </>}
     </>
   );
