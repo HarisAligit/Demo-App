@@ -25,19 +25,21 @@ const Multi = ({name, options, func, nameid, objArr, setPage}) => {
 
 const InputFilter = ({setName, Name, title, func, objArr, setPage}) => {
 
+  const [businessName, setBusinessName] = useState('')
+
   const handleInput = (e) => {
     if (e.key === 'Enter') {
-      func({...objArr, "name": Name});
+      func({...objArr, "name": businessName});
       setPage(1);
     } else {
-      setName(e.target.value)
+      setBusinessName(e.target.value)
     }
   }
 
   return (
     <>
       <h3>{title}</h3>
-      <input type="text" onKeyDown={handleInput}></input>
+      <input type="text" onKeyUp={handleInput}></input>
       <br/>
       <br/>
     </>

@@ -82,7 +82,6 @@ const Clients = () => {
     else {
       options.map((item) => {
         if (item.type === "select") {
-          console.log(selected[item.key]);
           selected[item.key].forEach((val) => {
             newArgs += item.url + val + "&";
           })
